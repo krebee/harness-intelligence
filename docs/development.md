@@ -30,11 +30,38 @@ Do not maintain a long-lived `develop` branch. Changes should flow from short-li
 
 ## Issues
 
-Create an issue before implementation when a change introduces or materially changes architecture, runtime behavior, public interfaces, telemetry semantics, or v0 scope.
+Create an issue before implementation when a change introduces or materially changes runtime behavior, public interfaces, telemetry semantics, v0 scope, or another significant project constraint.
 
-The issue should establish the goal, scope, non-goals, acceptance criteria, and important unresolved questions before implementation begins.
+The issue should establish the goal, context, scope, non-goals, acceptance criteria, validation approach, and important unresolved questions before implementation begins.
 
-A dedicated issue is optional for trivial corrections such as typos or narrowly scoped documentation fixes that introduce no architectural or behavioral decision.
+Use the repository issue templates as appropriate:
+
+- `Change` for scoped implementation or documentation work
+- `Decision` when a durable project decision needs explicit comparison and discussion
+- `Bug report` for incorrect or unexpected behavior
+
+A dedicated issue is optional for trivial corrections such as typos or narrowly scoped documentation fixes that introduce no durable decision or behavioral change.
+
+## Decision records
+
+Durable project decisions are recorded under `docs/adr/`.
+
+Despite the directory name, these records are not limited to software architecture. A record is appropriate for any decision that future contributors or coding agents may need to understand, including architecture, runtime boundaries, dependencies and tooling, telemetry, security and privacy, development process, compatibility, release policy, and significant scope constraints.
+
+Prefer this flow for decisions that require discussion:
+
+```text
+Decision issue / discussion
+  -> decision
+  -> record under docs/adr/
+  -> implementation PR
+```
+
+A record may be included in the implementation PR when the governing issue has already settled the decision. Do not use implementation code as the only record of a significant decision.
+
+Do not create decision records for minor implementation details. Record decisions that are durable, involve meaningful tradeoffs, or are likely to be revisited later.
+
+When a decision changes, add a new record and mark the old one as superseded instead of rewriting the previous rationale. See `docs/adr/README.md` for naming, status, and template guidance.
 
 ## Commits
 
@@ -69,15 +96,20 @@ Temporary or exploratory commits are acceptable on a topic branch while work is 
 
 All substantive changes should reach `main` through a pull request.
 
-Open the pull request as a draft while implementation is incomplete. The pull request should reference the governing issue when one exists and should explain:
+Open the pull request as a draft while implementation is incomplete. Use `.github/pull_request_template.md` and reference the governing issue when one exists.
+
+A pull request should make clear:
 
 - what changed
 - why it changed
 - what is intentionally out of scope
 - how the change was validated
+- whether it introduces or changes a durable project decision
 - any unresolved risks or follow-up work
 
-Avoid combining unrelated changes in one pull request. Architectural decisions should be discussed in an issue before being embedded in implementation.
+If the pull request implements a durable project decision, link the accepted record under `docs/adr/` or include the new record in the same pull request when the governing discussion has already converged.
+
+Avoid combining unrelated changes in one pull request. Significant decisions should not be silently embedded in implementation.
 
 Prefer squash merge. The squash commit should use a Conventional Commit style title and describe the logical change represented by the pull request.
 
@@ -102,6 +134,7 @@ Coding agents should follow this sequence for substantive work:
 
 ```text
 Issue
+  -> Decision Record when required
   -> short-lived branch
   -> atomic commits
   -> Draft PR
@@ -111,6 +144,6 @@ Issue
   -> squash merge
 ```
 
-Agents should not silently broaden scope, introduce speculative abstractions, or make architectural decisions that are not supported by the active issue or repository documentation.
+Agents should not silently broaden scope, introduce speculative abstractions, or make significant project decisions that are not supported by the active issue or accepted decision records.
 
-When implementation reveals a missing architectural decision, record it in the issue or documentation rather than hiding the decision inside code.
+When implementation reveals a missing significant decision, surface it in the governing issue or a new Decision issue rather than hiding the decision inside code.
