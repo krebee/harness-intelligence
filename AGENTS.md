@@ -15,6 +15,21 @@ Harness Intelligence is a runtime intelligence layer for agent harnesses. It sho
 - Keep harness-specific integration behind adapters so the core is not coupled to a single agent harness.
 - Document unresolved architectural questions instead of silently locking them into implementation details.
 
+## Git workflow
+
+- Do not commit directly to `main`.
+- Use a short-lived branch for every substantive change.
+- Use one of these branch prefixes where applicable: `feat/`, `fix/`, `docs/`, `refactor/`, `test/`, `chore/`.
+- Keep commits atomic: one logical change per commit.
+- Use Conventional Commits for commit messages.
+- Do not mix unrelated refactoring with feature or fix work.
+- Open pull requests as drafts while implementation is in progress.
+- Prefer squash merge so `main` retains a concise logical history.
+- Architectural changes require an issue before implementation begins.
+- Small typo or trivial documentation fixes may omit a dedicated issue when no architectural or behavioral decision is involved.
+
+See `docs/development.md` for the detailed repository workflow.
+
 ## Validation
 
 Before considering Rust changes complete, run:
@@ -27,6 +42,8 @@ cargo test --all
 ```
 
 If the workspace is not yet initialized, do not add placeholder Rust code solely to satisfy these commands.
+
+Do not commit Rust changes while required validation is failing unless the active issue explicitly documents an intentional failing state.
 
 ## v0 scope discipline
 
