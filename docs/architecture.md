@@ -17,7 +17,7 @@ Harness Adapter
     -> Main Agent
 ```
 
-The proposed v0 core runtime contract is documented in [`core-v0.md`](core-v0.md). The canonical v0 telemetry contract is documented in [`telemetry-v0.md`](telemetry-v0.md).
+The v0 core runtime contract is documented in [`core-v0.md`](core-v0.md). The canonical v0 telemetry contract is documented in [`telemetry-v0.md`](telemetry-v0.md).
 
 ### Harness Adapter
 
@@ -37,9 +37,11 @@ Represents the structured output of the brain. A plan is validated before a conc
 
 ### Telemetry
 
-Telemetry is a foundational concern rather than a later add-on. The runtime must make it possible to reconstruct the relationship between observation, harness decision, execution, and outcome so future evaluation and training-data generation remain possible.
+Telemetry is a foundational concern rather than a later add-on. The runtime must make it possible to reconstruct the relationship between observation, harness decision, execution, capability demand/use, and outcome so future evaluation and training-data generation remain possible.
 
 The v0 telemetry event model, content policy, schema evolution rules, and sink abstraction are defined in [`telemetry-v0.md`](telemetry-v0.md) and DR-0001.
+
+Capability lifecycle evidence deliberately distinguishes availability, candidacy, exposure, observed demand, recognized request, execution, and outcome. This allows later systems to build capability utility/reputation/tier models without making those derived scores canonical telemetry or confusing frequent exposure with capability quality. The durable extension is proposed in DR-0003 and issue #7.
 
 ## Architectural constraints
 
@@ -47,19 +49,21 @@ The v0 telemetry event model, content policy, schema evolution rules, and sink a
 - The core should not depend on a single harness implementation.
 - Skills, tools, MCP servers, and memory providers may eventually be represented through a common capability model, but v0 should not over-generalize before requirements are validated.
 - Project-specific knowledge should remain external to model weights.
-- Derived metrics should be reproducible from lower-level telemetry where practical.
+- Derived metrics and profiles should be reproducible from lower-level telemetry where practical.
+- Capability tiers, reputation, utility, and recommendation priority are derived state rather than canonical runtime evidence.
 - The first executable path must be deterministic, observable, and suitable as a baseline for later intelligent planning.
 
 ## v0 design status
 
-Telemetry semantics are defined by [`telemetry-v0.md`](telemetry-v0.md) and DR-0001.
+Telemetry semantics are defined by [`telemetry-v0.md`](telemetry-v0.md) and DR-0001. Capability-demand semantics are being extended through issue #7 and DR-0003 without introducing a ranking/tier implementation into v0.
 
-The remaining core runtime boundary is proposed in [`core-v0.md`](core-v0.md) and DR-0002, governed by issue #5. Implementation-level choices such as exact async/cancellation primitives and internal module layout remain intentionally deferred until the first Rust implementation PR.
+The core runtime boundary is defined in [`core-v0.md`](core-v0.md) and DR-0002. Implementation-level choices such as exact async/cancellation primitives and internal module layout remain intentionally deferred until the first Rust implementation PR.
 
 ## Later phases, not v0 core scope
 
 - local or remote LLM-backed planning
 - model weakness profiling and runtime adaptation
+- capability reputation/tier/ranking policies
 - automatic skill creation or mutation
 - project memory intelligence
 - tool-schema pruning
