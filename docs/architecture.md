@@ -19,6 +19,8 @@ Harness Adapter
 
 The v0 core runtime contract is documented in [`core-v0.md`](core-v0.md). The canonical v0 telemetry contract is documented in [`telemetry-v0.md`](telemetry-v0.md).
 
+A forward design for evidence-backed capability evolution is proposed in [`capability-lifecycle.md`](capability-lifecycle.md). It does not expand the first v0 implementation scope; it defines how later memory, skill, tool, MCP, and other durable capability systems should relate evidence, lifecycle state, derived profiles, and runtime exposure policy.
+
 ### Harness Adapter
 
 Bridges a concrete agent harness to the Harness Intelligence core. It collects the information needed to build a snapshot and applies the resulting plan back to the harness. Harness-specific types and lifecycle hooks remain outside the core.
@@ -43,6 +45,21 @@ The v0 telemetry event model, content policy, schema evolution rules, and sink a
 
 Capability lifecycle evidence deliberately distinguishes availability, candidacy, exposure, observed demand, recognized request, execution, and outcome. This allows later systems to build capability utility/reputation/tier models without making those derived scores canonical telemetry or confusing frequent exposure with capability quality. The durable extension is proposed in DR-0003 and issue #7.
 
+### Capability lifecycle
+
+Later capability evolution should preserve an explicit separation between:
+
+```text
+canonical evidence
+    -> durable capability state + revisions
+    -> derived CapabilityProfile
+    -> exposure / recommendation policy
+```
+
+Durable capability creation, promotion, revision, supersession, deprecation, or archival should be traceable to provenance. Quality/trust/profile state must not imply unconditional exposure; exposure remains a task/model/context-budget/runtime policy decision.
+
+The detailed forward design is proposed in [`capability-lifecycle.md`](capability-lifecycle.md), DR-0004, and issue #9.
+
 ## Architectural constraints
 
 - The main agent is replaceable and remains outside the Harness Intelligence core.
@@ -51,6 +68,9 @@ Capability lifecycle evidence deliberately distinguishes availability, candidacy
 - Project-specific knowledge should remain external to model weights.
 - Derived metrics and profiles should be reproducible from lower-level telemetry where practical.
 - Capability tiers, reputation, utility, and recommendation priority are derived state rather than canonical runtime evidence.
+- Durable capability lifecycle changes should remain traceable to explicit provenance/evidence.
+- Capability quality/profile and per-task exposure policy are separate concerns.
+- Capability revisions should remain attributable rather than silently rewriting materially changed historical state.
 - The first executable path must be deterministic, observable, and suitable as a baseline for later intelligent planning.
 
 ## v0 design status
@@ -59,11 +79,14 @@ Telemetry semantics are defined by [`telemetry-v0.md`](telemetry-v0.md) and DR-0
 
 The core runtime boundary is defined in [`core-v0.md`](core-v0.md) and DR-0002. Implementation-level choices such as exact async/cancellation primitives and internal module layout remain intentionally deferred until the first Rust implementation PR.
 
+The evidence-backed capability lifecycle in [`capability-lifecycle.md`](capability-lifecycle.md), issue #9, and DR-0004 is a later-phase design constraint. The full lifecycle, promotion gates, profiles, and adaptive exposure policies are not requirements for the first v0 executable baseline.
+
 ## Later phases, not v0 core scope
 
 - local or remote LLM-backed planning
 - model weakness profiling and runtime adaptation
 - capability reputation/tier/ranking policies
+- evidence-backed capability promotion/supersession automation
 - automatic skill creation or mutation
 - project memory intelligence
 - tool-schema pruning
